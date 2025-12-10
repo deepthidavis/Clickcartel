@@ -92,4 +92,80 @@ This project demonstrates Spark fundamentals:
 ### 🔹 Deduplication
 - Stream-to-stream deduplication using:
   ```python
+
   withWatermark("event_time", "10 minutes").dropDuplicates(["event_id"])
+## ⚙️ Section 4: Troubleshooting & Performance Tuning
+
+### 🎯 Handling Data Skew
+- The raw user events dataset is intentionally skewed — a few products receive disproportionately high numbers of views.
+- To mitigate this, the Gold layer implements a **salting technique**:
+  - Adds a random salt key before aggregation
+  - Distributes skewed keys across partitions
+  - Reduces shuffle pressure and eliminates long-tail tasks
+
+### 🎯 Partitioning Strategy
+- Gold tables are written using `partitionBy()` for faster downstream queries.
+- Common partition columns include:
+  - `event_date`
+  - `product_category`
+- Optimizes BI tools like Power BI or Tableau.
+
+### 🎯 Adaptive Query Execution (AQE)
+- AQE is enabled by default on Databricks.
+- It provides automatic optimization for:
+  - **Skew join handling**
+  - **Dynamic shuffle partitioning**
+  - **Optimized join strategies**
+- Greatly improves performance for skewed datasets like Clickcartel's event logs.
+
+---
+
+## 🔄 Section 5: Structured Streaming
+
+### ✔️ End-to-End Streaming Pipeline
+- The pipeline from **Bronze → Silver** is implemented using **Structured Streaming**.
+- Auto Loader (`cloudFiles`) ingesting raw JSON ensures:
+  - Incremental file discovery
+  - Schema inference
+  - Schema evolution handling
+
+
+## ⚙️ Section 4: Troubleshooting & Performance Tuning
+
+### 🎯 Handling Data Skew
+- The raw user events dataset is intentionally skewed — a few products receive disproportionately high numbers of views.
+- To mitigate this, the Gold layer implements a **salting technique**:
+  - Adds a random salt key before aggregation
+  - Distributes skewed keys across partitions
+  - Reduces shuffle pressure and eliminates long-tail tasks
+
+### 🎯 Partitioning Strategy
+- Gold tables are written using `partitionBy()` for faster downstream queries.
+- Common partition columns include:
+  - `event_date`
+  - `product_category`
+- Optimizes BI tools like Power BI or Tableau.
+
+### 🎯 Adaptive Query Execution (AQE)
+- AQE is enabled by default on Databricks.
+- It provides automatic optimization for:
+  - **Skew join handling**
+  - **Dynamic shuffle partitioning**
+  - **Optimized join strategies**
+- Greatly improves performance for skewed datasets like Clickcartel's event logs.
+
+---
+
+## 🔄 Section 5: Structured Streaming
+
+### ✔️ End-to-End Streaming Pipeline
+- The pipeline from **Bronze → Silver** is implemented using **Structured Streaming**.
+- Auto Loader (`cloudFiles`) ingesting raw JSON ensures:
+  - Incremental file discovery
+  - Schema inference
+  - Schema evolution handling
+
+### ✔️ Streaming Deduplication Using Watermarks
+```python
+withWatermark("event_time", "10 minutes") \
+    .dropDuplicates(["event_id"])
