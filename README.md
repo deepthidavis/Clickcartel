@@ -20,7 +20,7 @@ Your mission is to take on this request and build an automated, scalable data pi
 
 - You will see the entire **execution hierarchy** in action (transformations are defined, and actions trigger jobs).
 - The pipeline demonstrates **lazy evaluation**—the entire plan is built before any data is processed.
-- You will use key features from multiple Spark Modules, including **Spark SQL**, **DataFrames**, **Structured Streaming**, and the **Pandas API on Spark**.
+- You will use key features from multiple Spark Modules, including **Spark SQL**, **DataFrames**, **Structured Streaming**
 
 #### **Section 2: Using Spark SQL**
 
