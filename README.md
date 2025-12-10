@@ -27,7 +27,6 @@ Your mission is to take on this request and build an automated, scalable data pi
 - **Reading Multiple Formats:** The Bronze layer ingests data from three different file formats: **JSON** (with Auto Loader), **CSV**, and **Parquet**.
 - **Writing to Delta Tables:** You will write data to Delta tables using different save modes (`append` for streaming, `overwrite` for batch).
 - **Partitioning for Optimization:** The final Gold table is written with `partitionBy()`, a key strategy for optimizing data retrieval.
-- **Executing SQL Queries:** The final step of the project uses `spark.sql()` to query the Gold layer Delta tables directly, demonstrating how to use SQL for analytics.
 
 #### **Section 3: Developing Apache Spark™ DataFrame/DataSet API Applications**
 
