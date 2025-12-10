@@ -15,9 +15,6 @@ Your mission is to take on this request and build an automated, scalable data pi
 
 ---
 
-### **How This Project Prepares You for the Certification Exam**
-
-This project provides practical, hands-on experience covering the majority of the topics in the **Databricks Certified Associate Developer for Apache Spark** exam outline.
 
 #### **Section 1: Apache Spark Architecture and Components**
 
