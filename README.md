@@ -1,53 +1,95 @@
-# Clickcartel
-#### **1. Project Context and Scenario**
+# 📦 Clickcartel – End-to-End Spark Data Engineering Pipeline
 
-You are a Data Engineer at **"Clickcartel,"** a rapidly growing e-commerce platform. The marketing and product teams are struggling to make data-driven decisions because their raw user data is disconnected and hard to analyze. They have come to you with a critical business need:
+## 🚀 Project Overview
 
-_"We need to understand our user journey. What products are people looking at? What actions lead to a purchase? Who are our most valuable customers? We need reliable, aggregated data to answer these questions."_
+You are a Data Engineer at **Clickcartel**, a rapidly growing e-commerce platform.  
+The marketing and product teams struggle to make data-driven decisions because:
 
-Your mission is to take on this request and build an automated, scalable data pipeline. You will process raw, messy user event data, combine it with customer and product information, and produce clean, aggregated "Gold" tables ready for the analytics team. This pipeline will be the single source of truth for user behavior analytics at Clickcartel.
+- User event data is messy  
+- Customer & product data is disconnected  
+- No unified analytics layer exists  
 
-#### **2. Data Sources (To be generated synthetically)**
+They approach you with a critical business need:
 
-- **Raw User Events (JSON, Streaming):** A continuous stream of JSON files representing user actions on the website. Each event has a timestamp, user ID, event type (`view_product`, `add_to_cart`, `purchase`), and associated data like `product_id`. This dataset will be **intentionally skewed**, with a few specific products generating a disproportionately high number of `view_product` events.
-- **Customer Profiles (CSV, Batch):** A CSV file containing customer details like `customer_id`, `signup_date`, and `location`. This is a dimension table that is updated periodically.
-- **Product Details (Parquet, Batch):** A Parquet file containing product information like `product_id`, `product_name`, `category`, and `price`. This is another dimension table.
+> **“We need to understand our user journey.  
+What products are people viewing?  
+What actions lead to purchases?  
+Who are our most valuable customers?”**
+
+Your mission:
+
+### ✔️ Build an automated, scalable **multi-layered Spark/Delta Lake pipeline**  
+✔️ Process raw user event streams  
+✔️ Clean & enrich data with customer/product information  
+✔️ Produce aggregated **Gold** tables for analytics  
+
+This pipeline becomes Clickcartel’s **single source of truth** for user behavior.
 
 ---
 
+## 📊 Data Sources (Synthetic Generation)
 
-#### **Section 1: Apache Spark Architecture and Components**
+### **1️⃣ Raw User Events (JSON, Streaming)**
+- Ingested via **Structured Streaming (Auto Loader)**
+- Contains:
+  - `timestamp`
+  - `user_id`
+  - `event_type` → `view_product`, `add_to_cart`, `purchase`
+  - `product_id`
+- **Intentionally skewed** so certain products receive disproportionately high number of views.
 
-- You will see the entire **execution hierarchy** in action (transformations are defined, and actions trigger jobs).
-- The pipeline demonstrates **lazy evaluation**—the entire plan is built before any data is processed.
-- You will use key features from multiple Spark Modules, including **Spark SQL**, **DataFrames**, **Structured Streaming**
+### **2️⃣ Customer Profiles (CSV, Batch)**
+- Dimension table with:
+  - `customer_id`
+  - `signup_date`
+  - `location`
 
-#### **Section 2: Using Spark SQL**
+### **3️⃣ Product Details (Parquet, Batch)**
+- Product catalog with:
+  - `product_id`
+  - `product_name`
+  - `category`
+  - `price`
 
-- **Reading Multiple Formats:** The Bronze layer ingests data from three different file formats: **JSON** (with Auto Loader), **CSV**, and **Parquet**.
-- **Writing to Delta Tables:** You will write data to Delta tables using different save modes (`append` for streaming, `overwrite` for batch).
-- **Partitioning for Optimization:** The final Gold table is written with `partitionBy()`, a key strategy for optimizing data retrieval.
+---
 
-#### **Section 3: Developing Apache Spark™ DataFrame/DataSet API Applications**
+# 🧱 Section 1: Apache Spark Architecture & Components
 
-- **Manipulating Columns:** The Silver layer extensively uses functions like `withColumn()`, `withColumnRenamed()`, and `select()` to clean and structure the data.
-- **Data Deduplication:** You will perform stateful stream-to-stream deduplication using a watermark.
-- **Aggregate Operations:** The Gold layer uses a wide range of aggregations, including `groupBy().agg()`, `count()`, `sum()`, and `approx_count_distinct()`.
-- **Date and Timestamp Functions:** The pipeline uses `to_timestamp()`, `to_date()`, and `current_timestamp()` to handle time-based data correctly.
-- **Combining DataFrames (Joins):** You will implement both `inner` and `left` joins in the Silver layer to enrich event data.
-- **Broadcast Joins:** You will explicitly use `F.broadcast()` on a dimension table, a critical optimization technique for joining a large DataFrame with a smaller one.
-- **Managing Schemas:** You will define and apply a `StructType` schema during data ingestion to ensure data quality and prevent errors.
-- **User-Defined Functions (UDFs):** You will create and apply a **Pandas UDF** to perform complex data transformation that is difficult to express with built-in functions.
+This project demonstrates Spark fundamentals:
 
-#### **Section 4: Troubleshooting and Tuning Apache Spark DataFrame API Applications**
+- **Execution hierarchy** → jobs, stages, tasks  
+- **Lazy evaluation** → transformations build the DAG before actions  
+- Modules used:
+  - Spark SQL  
+  - DataFrames / Dataset API  
+  - Structured Streaming  
 
-- **Handling Data Skew:** This is a core focus of the project. The data is intentionally skewed, and you will implement a **salting** technique in the Gold layer to mitigate the skew and reduce shuffling, a common performance bottleneck.
-- **Partitioning:** You will use `partitionBy` when writing the final Gold table to dramatically improve query performance for downstream users.
-- **Adaptive Query Execution (AQE):** While the code runs on Databricks where AQE is enabled by default, this project provides a perfect scenario to understand the problems AQE helps solve, such as dynamically handling skew and optimizing shuffles.
+---
 
-#### **Section 5: Structured Streaming**
+# 🧠 Section 2: Spark SQL Concepts Used
 
-- **End-to-End Streaming Pipeline:** The Bronze-to-Silver pipeline is a complete Structured Streaming application.
-- **Streaming Sources and Sinks:** You will use Auto Loader (`cloudFiles`) as a streaming source and Delta Lake as a streaming sink.
-- **Streaming Deduplication with Watermarks:** You will use `withWatermark()` combined with `dropDuplicates()` to manage duplicate data from the stream with exactly-once semantics.
-- **Window and Aggregation:** The final Gold layer includes a window function (`rank()`) applied over aggregated data.
+### ✔️ Reading multiple formats
+- JSON (Auto Loader)  
+- CSV  
+- Parquet  
+
+### ✔️ Writing Delta tables
+- `append` for streaming  
+- `overwrite` for batch refresh  
+
+### ✔️ Partitioning
+- Gold tables use `partitionBy()` for optimized query performance.
+
+---
+
+# 🛠️ Section 3: Spark DataFrame / Dataset API Techniques
+
+### 🔹 Column Manipulation
+- `withColumn()`  
+- `withColumnRenamed()`  
+- `select()`  
+
+### 🔹 Deduplication
+- Stream-to-stream deduplication using:
+  ```python
+  withWatermark("event_time", "10 minutes").dropDuplicates(["event_id"])
